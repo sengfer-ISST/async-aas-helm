@@ -1,8 +1,8 @@
 faaast-service:
   messageBus:
-    host: "wss://<path:factory-x-ci-cd/data/async-aas#broker-url>:443"
-    user: "<path:factory-x-ci-cd/data/async-aas#broker-user>"
-    password: "<path:factory-x-ci-cd/data/async-aas#broker-pw>"
+    host: "wss://local.broker.url:443"
+    user: "faaast-messagebus-user"
+    password: "faaast-messagebus-pw"
 
 aas-basyx-v2-full:
   mqtt:
@@ -21,7 +21,7 @@ aas-basyx-v2-full:
        nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
        nginx.ingress.kubernetes.io/websocket-services: mqttbroker-websockets-service
       hosts:
-        - host: <path:factory-x-ci-cd/data/async-aas#broker-url>
+        - host: local.broker.url
           type: websockets
           paths:
             - path: /
@@ -29,38 +29,38 @@ aas-basyx-v2-full:
       tls:
         - secretName: chart-example-tls
           hosts:
-            - <path:factory-x-ci-cd/data/async-aas#broker-url>
+            - local.broker.url
     apirules: []
     auth:
       enabled: true
       users:
         - username: fx-factory
-          password: <path:factory-x-ci-cd/data/async-aas#broker-pw-hash>
+          password: fx-factory-pw-hash
           acl:
             - topic: "#"
               access: readwrite
         - username: fx-publisher
-          password: <path:factory-x-ci-cd/data/async-aas#broker-pw-hash>
+          password: fx-publisher-pw-hash
           acl:
             - topic: "#"
               access: readwrite
         - username: fx-subscriber
-          password: <path:factory-x-ci-cd/data/async-aas#broker-pw-hash>
+          password: fx-subscriber-pw-hash
           acl:
             - topic: "#"
               access: readwrite
         - username: fx-factory2
-          password: <path:factory-x-ci-cd/data/async-aas#broker-pw-hash>
+          password: fx-factory2-pw-hash
           acl:
             - topic: "#"
               access: readwrite
         - username: fx-publisher2
-          password: <path:factory-x-ci-cd/data/async-aas#broker-pw-hash>
+          password: fx-publisher2-pw-hash
           acl:
             - topic: "#"
               access: readwrite
         - username: fx-subscriber2
-          password: <path:factory-x-ci-cd/data/async-aas#broker-pw-hash>
+          password: fx-subscriber2-pw-hash
           acl:
             - topic: "#"
               access: readwrite
@@ -70,15 +70,15 @@ aas-basyx-v2-full:
     postgresql:
       enabled: true
       auth:
-        username: <path:factory-x-ci-cd/data/async-aas#kc-pg-user>
-        password: <path:factory-x-ci-cd/data/async-aas#kc-pg-pw>
-        database: <path:factory-x-ci-cd/data/async-aas#kc-pg-db>
+        username: keycloak-postgres-user
+        password: keycloak-postgres-pw
+        database: keycloak-postgres-db
     ingress:
       enabled: true
-      hostname: <path:factory-x-ci-cd/data/async-aas#keycloak-url>
+      hostname: local.keycloak.url
     auth:
-      adminUser: <path:factory-x-ci-cd/data/async-aas#keycloak-user>
-      adminPassword: <path:factory-x-ci-cd/data/async-aas#keycloak-pw>
+      adminUser: keycloak-user
+      adminPassword: keycloak-pw
 
   aas-registry:
     enabled: true
@@ -93,7 +93,7 @@ aas-basyx-v2-full:
       connectionString: null
     ingress:
       enabled: true
-      host: <path:factory-x-ci-cd/data/async-aas#basyx-reg-url>
+      host: local.basyx.reg.url
     config: |-
       basyx:
         cors:
@@ -129,7 +129,7 @@ aas-basyx-v2-full:
       spring.security.oauth2.resourceserver.jwt.issuer-uri = http://basyx-keycloak.basyx.svc.cluster.local:8080/realms/BaSyx
     ingress:
       enabled: true
-      host: <path:factory-x-ci-cd/data/async-aas#basyx-disco-url>
+      host: local.basyx.disco.url
 
   # Also needs an ingress.
   aas-environment:
@@ -150,22 +150,22 @@ aas-basyx-v2-full:
 
       basyx.cors.allowed-origins=*
       basyx.cors.allowed-methods=GET,POST,PATCH,DELETE,PUT,OPTIONS,HEAD
-      basyx.aasrepository.feature.registryintegration=https://<path:factory-x-ci-cd/data/async-aas#basyx-reg-url>
-      basyx.externalurl=https://<path:factory-x-ci-cd/data/async-aas#basyx-env-url>
+      basyx.aasrepository.feature.registryintegration=https://local.basyx.reg.url
+      basyx.externalurl=https://local.basyx.env.url
       spring.servlet.multipart.max-file-size=128MB
       spring.servlet.multipart.max-request-size=128MB
 
       basyx.aasrepository.feature.mqtt.enabled = true
       basyx.submodelrepository.feature.mqtt.enabled = true
       mqtt.clientId=basyx
-      mqtt.hostname=<path:factory-x-ci-cd/data/async-aas#broker-url>
+      mqtt.hostname=local.broker.url
       mqtt.protocol=wss
       mqtt.port=443
-      mqtt.username=<path:factory-x-ci-cd/data/async-aas#broker-user>
-      mqtt.password=<path:factory-x-ci-cd/data/async-aas#broker-pw>
+      mqtt.username=mqtt-broker-user
+      mqtt.password=mqtt-broker-pw
     ingress:
       enabled: true
-      host: <path:factory-x-ci-cd/data/async-aas#basyx-env-url>
+      host: local.basyx.env.url
 
   # Needs specific ingress.
   aas-web-ui:
